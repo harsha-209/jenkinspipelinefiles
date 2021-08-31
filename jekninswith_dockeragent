@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    stages {
+        stage('Back-end') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/harsha-209/simple-java-project.git']]])
+            }
+        }
+        stage('build') {
+            agent {
+                docker { image 'maven:3' }
+            }
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/harsha-209/simple-java-project.git']]])
+                sh 'mvn clean install'
+            }
+        }
+        stage('Front-end') {
+            agent {
+                docker { image 'node:14-alpine' }
+            }
+            steps {
+                sh 'node --version'
+            }
+        }
+    }
+}
