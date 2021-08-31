@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ssh -tt ubuntu@ec2-13-234-38-151.ap-south-1.compute.amazonaws.com "
+pwd
+ls
+echo $shell
+
+"
