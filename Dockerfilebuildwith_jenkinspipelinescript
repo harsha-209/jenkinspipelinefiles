@@ -1,0 +1,24 @@
+pipeline { 
+    agent any
+    environment {
+    imagename = "harshad"
+//    registryCredential = 'yenigul-dockerhub'
+//    dockerImage = ''
+    }
+    stages {
+        stage ('checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/harsha-209/dockerfilepractice.git']]])
+            }
+        }
+        stage('Building image') {
+            steps{
+                script {
+                 //   docker.build imagename 
+                    docker.build("db", "${WORKSPACE}/")
+                 //   docker.build("db", "${WORKSPACE}/docker/db")
+                }
+            }
+       }
+    }
+}
