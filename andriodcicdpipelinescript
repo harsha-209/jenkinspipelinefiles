@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/harsha-209/KotlinDagger.git']]])
+            }
+        }
+        stage('gradle clean') {
+            steps {
+                sh './gradlew clean'
+            }
+        }
+        stage('build gradlew') {
+            steps {
+                sh './gradlew assembleRelease'
+            }
+        }
+        stage('apk file') {
+            steps {
+                 archiveArtifacts artifacts: '**/*.apk', fingerprint: true, onlyIfSuccessful: true
+            }
+        }
+        stage('Deploy') {
+            steps {
+                appCenter apiToken: '6ea262210e1bf57e128ee31578b054952ffa47f5',
+                        ownerName: 'boppanaranjith',
+                        appName: 'andriod',  
+                        pathToApp: 'app/build/outputs/apk/release/app-release-unsigned.apk',
+                        distributionGroups: 'andriod'
+            }
+        }
+    }
+}
+
+
